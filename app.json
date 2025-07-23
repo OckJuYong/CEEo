@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "my-rn-app",
+    "name": "AI 대화 일기",
     "slug": "my-rn-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myrnapp",
+    "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
