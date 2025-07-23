@@ -7,7 +7,7 @@ build:
     - npm run build:web
 run:
   commands:
-    - npx serve -s web-build -l 8080
+    - npx serve -s dist -l 8080
 context:
   git:
     url: https://github.com/OckJuYong/CEEo.git
