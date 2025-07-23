@@ -1,4 +1,4 @@
-# AI 대화 일기 앱 🤖📝
+# AI 대화 일기 앱 (CEEo) 🤖📝
 
 React Native + Expo로 구현한 AI 기반 대화형 일기 앱입니다.
 
@@ -64,6 +64,9 @@ npm run android
 
 # 웹에서 실행
 npm run web
+
+# 웹 빌드 (배포용)
+npm run build:web
 ```
 
 ## 📱 주요 화면
@@ -94,6 +97,13 @@ npm run web
 - 감정에 따른 이모지 자동 매핑
 - 부드러운 애니메이션과 직관적인 네비게이션
 - 다크모드 지원 (시스템 설정 기반)
+
+## 🌐 배포
+
+CloudType을 통한 자동 배포 지원:
+- `cloudtype.yml` 설정 파일 포함
+- 환경 변수 자동 설정
+- 웹 빌드 자동화
 
 ## 📄 라이선스
 
