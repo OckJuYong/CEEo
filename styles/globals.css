@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-color: #F2F2F7;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 모바일 뷰포트 최적화 */
+@media (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* PWA 스타일 */
+.pwa-container {
+  max-width: 100vw;
+  min-height: 100vh;
+  background-color: #F2F2F7;
+}
+
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #E5E5EA;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0 24px 0;
+  z-index: 1000;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  color: #8E8E93;
+  transition: color 0.2s;
+}
+
+.tab-item.active {
+  color: #007AFF;
+}
+
+.content-container {
+  padding-bottom: 80px;
+}
