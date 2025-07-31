@@ -4,10 +4,14 @@ const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 const OPENAI_BASE_URL = 'https://api.openai.com/v1';
 
 if (!OPENAI_API_KEY) {
-  throw new Error('OpenAI API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.');
+  console.warn('⚠️ OpenAI API 키가 설정되지 않았습니다. CloudType 환경변수를 확인해주세요.');
 }
 
 export const sendChatMessage = async (messages: ChatMessage[]): Promise<string> => {
+  if (!OPENAI_API_KEY) {
+    throw new Error('OpenAI API 키가 설정되지 않았습니다. CloudType 환경변수를 확인해주세요.');
+  }
+
   try {
     const response = await fetch(`${OPENAI_BASE_URL}/chat/completions`, {
       method: 'POST',

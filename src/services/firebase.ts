@@ -10,9 +10,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Validate configuration
+// Validate configuration (빌드 시에는 경고만 출력)
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-  throw new Error('Firebase 구성이 올바르지 않습니다. .env 파일을 확인해주세요.');
+  console.warn('⚠️ Firebase 구성이 올바르지 않습니다. CloudType 환경변수를 확인해주세요.');
 }
 
 const app = initializeApp(firebaseConfig);

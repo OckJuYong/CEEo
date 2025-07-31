@@ -1,16 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../src/components/Layout';
-
-// 서비스 임포트 (이후 변환 예정)
-// import { sendChatMessage, summarizeConversation, analyzeEmotion, generateImage } from '../src/services/openai';
-// import { saveDiaryEntry } from '../src/services/diary';
-
-interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-}
+import { sendChatMessage, summarizeConversation, analyzeEmotion, generateImage } from '../src/services/openai';
+import { saveDiaryEntry } from '../src/services/diary';
+import { ChatMessage } from '../src/types/diary';
 
 export default function ChatScreen() {
   const router = useRouter();
@@ -50,11 +43,8 @@ export default function ChatScreen() {
     setIsLoading(true);
 
     try {
-      // TODO: OpenAI API 호출 (이후 구현)
-      // const response = await sendChatMessage(newMessages.slice(-10));
-      
-      // 임시 응답
-      const response = '네, 잘 들었습니다. 더 자세히 말씀해 주세요.';
+      console.log('🤖 GPT API 호출 중...');
+      const response = await sendChatMessage(newMessages.slice(-10));
       
       const assistantMessage: ChatMessage = {
         role: 'assistant',
@@ -63,9 +53,10 @@ export default function ChatScreen() {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      console.log('✅ GPT 응답 완료');
     } catch (error) {
       console.error('Chat error:', error);
-      alert('메시지를 보내는 중 오류가 발생했습니다.');
+      alert('메시지를 보내는 중 오류가 발생했습니다: ' + (error instanceof Error ? error.message : '알 수 없는 오류'));
     } finally {
       setIsLoading(false);
     }
@@ -77,16 +68,41 @@ export default function ChatScreen() {
       return;
     }
 
-    if (confirm('AI 일기를 생성하시겠습니까?')) {
+    if (confirm('AI 일기를 생성하시겠습니까? (요약, 감정분석, AI 그림 생성)')) {
       setIsLoading(true);
       
       try {
-        // TODO: 일기 생성 로직 구현
-        alert('🎉 대화 완료! 오늘의 AI 일기가 완성되었습니다!');
+        console.log('🤖 대화 요약 시작...');
+        const summary = await summarizeConversation(messages);
+        console.log('✅ 대화 요약 완료');
+        
+        console.log('🧠 감정 분석 시작...');
+        const emotion = await analyzeEmotion(messages);
+        console.log('✅ 감정 분석 완료');
+        
+        console.log('🎨 AI 이미지 생성 시작...');
+        const imageUrl = await generateImage(summary);
+        console.log('✅ AI 이미지 생성 완료');
+        
+        console.log('💾 일기 저장 시작...');
+        const today = new Date().toISOString().split('T')[0];
+        
+        await saveDiaryEntry({
+          date: today,
+          messages,
+          summary,
+          emotion,
+          imageUrl,
+          createdAt: new Date()
+        });
+        
+        console.log('✅ 일기 저장 완료');
+        
+        alert('🎉 AI 일기 생성 완료!\n\n✅ 대화 요약\n✅ 감정 분석\n✅ AI 그림 생성\n\n타임라인에서 확인해보세요!');
         router.push('/timeline');
       } catch (error) {
         console.error('End conversation error:', error);
-        alert('대화를 처리하는 중 문제가 발생했습니다.');
+        alert('AI 일기 생성 중 오류가 발생했습니다: ' + (error instanceof Error ? error.message : '알 수 없는 오류'));
       } finally {
         setIsLoading(false);
       }

@@ -1,52 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../src/components/Layout';
 import Image from 'next/image';
-
-// 타입 정의 (이후 분리 예정)
-interface DiaryEntry {
-  id: string;
-  date: string;
-  summary: string;
-  emotion: string;
-  imageUrl?: string;
-  messages: Array<{
-    role: 'user' | 'assistant';
-    content: string;
-    timestamp: Date;
-  }>;
-  createdAt: Date;
-}
+import { getDiaryEntries } from '../src/services/diary';
+import { DiaryEntry } from '../src/types/diary';
 
 export default function TimelineScreen() {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
 
-  // 임시 데이터 (이후 실제 API 연동)
   useEffect(() => {
     const loadEntries = async () => {
       setIsLoading(true);
-      // TODO: 실제 API 호출 
-      // const data = await getDiaryEntries();
-      
-      // 임시 데이터
-      const mockEntries: DiaryEntry[] = [
-        {
-          id: '1',
-          date: '2024-01-15',
-          summary: '오늘은 새로운 프로젝트를 시작했습니다. 조금 긴장되지만 기대됩니다.',
-          emotion: '기대',
-          imageUrl: '/placeholder-image.jpg',
-          messages: [
-            { role: 'user', content: '오늘 새 프로젝트를 시작했어요', timestamp: new Date() },
-            { role: 'assistant', content: '와, 새로운 시작이네요! 어떤 기분이세요?', timestamp: new Date() }
-          ],
-          createdAt: new Date()
-        }
-      ];
-      
-      setEntries(mockEntries);
-      setIsLoading(false);
+      try {
+        console.log('📖 일기 목록 불러오기...');
+        const data = await getDiaryEntries();
+        setEntries(data);
+        console.log(`✅ ${data.length}개 일기 불러오기 완료`);
+      } catch (error) {
+        console.error('일기 목록 불러오기 실패:', error);
+        setEntries([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadEntries();
