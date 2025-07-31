@@ -1,7 +1,8 @@
-import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, where } from 'firebase/firestore';
 import { db } from './firebase';
 import { DiaryEntry, ChatMessage } from '../types/diary';
 import { saveDiaryEntryLocal, getDiaryEntriesLocal } from './localStorage';
+import { getCurrentUser } from './auth';
 
 // Firebase 사용 가능 여부 확인
 const isFirebaseAvailable = async (): Promise<boolean> => {
@@ -17,11 +18,14 @@ const isFirebaseAvailable = async (): Promise<boolean> => {
 
 export const saveDiaryEntry = async (entry: Omit<DiaryEntry, 'id'>): Promise<string> => {
   try {
+    const currentUser = getCurrentUser();
+    
     // Firebase 시도
     if (await isFirebaseAvailable()) {
       console.log('🔥 Firebase로 일기 저장 시도...');
       const docRef = await addDoc(collection(db, 'diaryEntries'), {
         ...entry,
+        userId: currentUser?.uid || 'anonymous', // 사용자 ID 추가
         createdAt: new Date(),
       });
       console.log('✅ Firebase 저장 성공');
@@ -44,10 +48,17 @@ export const saveDiaryEntry = async (entry: Omit<DiaryEntry, 'id'>): Promise<str
 
 export const getDiaryEntries = async (): Promise<DiaryEntry[]> => {
   try {
+    const currentUser = getCurrentUser();
+    
     // Firebase 시도
     if (await isFirebaseAvailable()) {
       console.log('🔥 Firebase에서 일기 불러오기...');
-      const q = query(collection(db, 'diaryEntries'), orderBy('date', 'desc'));
+      
+      // 사용자별 데이터 필터링
+      const q = currentUser 
+        ? query(collection(db, 'diaryEntries'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'))
+        : query(collection(db, 'diaryEntries'), where('userId', '==', 'anonymous'), orderBy('date', 'desc'));
+      
       const querySnapshot = await getDocs(q);
       
       const entries = querySnapshot.docs.map(doc => ({

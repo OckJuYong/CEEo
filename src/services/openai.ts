@@ -8,11 +8,20 @@ if (!OPENAI_API_KEY) {
 }
 
 export const sendChatMessage = async (messages: ChatMessage[]): Promise<string> => {
+  console.log('🔑 OpenAI API 키 확인:', OPENAI_API_KEY ? '설정됨' : '없음');
+  
   if (!OPENAI_API_KEY) {
+    // 개발 환경에서 임시 응답 제공
+    if (typeof window !== 'undefined') {
+      console.warn('⚠️ OpenAI API 키가 없어서 임시 응답을 제공합니다.');
+      return '죄송해요, 지금은 API 연결에 문제가 있어서 임시 응답을 드리고 있어요. CloudType 배포 후에는 정상적으로 작동할 예정입니다! 😊';
+    }
     throw new Error('OpenAI API 키가 설정되지 않았습니다. CloudType 환경변수를 확인해주세요.');
   }
 
   try {
+    console.log('📤 OpenAI API 요청 전송 중...', `${OPENAI_BASE_URL}/chat/completions`);
+    
     const response = await fetch(`${OPENAI_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -36,16 +45,23 @@ export const sendChatMessage = async (messages: ChatMessage[]): Promise<string> 
       }),
     });
 
+    console.log('📥 OpenAI API 응답 상태:', response.status, response.statusText);
+
     if (!response.ok) {
-      throw new Error(`OpenAI API Error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('❌ OpenAI API 에러 상세:', errorText);
+      throw new Error(`OpenAI API Error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
+    console.log('📊 OpenAI API 응답 데이터 확인');
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('❌ 잘못된 OpenAI 응답 구조:', data);
       throw new Error('OpenAI API로부터 잘못된 응답을 받았습니다.');
     }
     
+    console.log('✅ OpenAI 응답 성공:', data.choices[0].message.content.substring(0, 50) + '...');
     return data.choices[0].message.content;
   } catch (error) {
     console.error('OpenAI API Error:', error);

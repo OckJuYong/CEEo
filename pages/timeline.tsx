@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../src/components/Layout';
+import ProtectedRoute from '../src/components/ProtectedRoute';
 import Image from 'next/image';
 import { getDiaryEntries } from '../src/services/diary';
 import { DiaryEntry } from '../src/types/diary';
@@ -55,20 +56,23 @@ export default function TimelineScreen() {
 
   if (isLoading) {
     return (
-      <Layout>
+      <ProtectedRoute>
+        <Layout>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
             <p className="text-gray-600">타임라인을 불러오고 있습니다...</p>
           </div>
         </div>
-      </Layout>
+        </Layout>
+      </ProtectedRoute>
     );
   }
 
   if (selectedEntry) {
     return (
-      <Layout>
+      <ProtectedRoute>
+        <Layout>
         <div className="flex flex-col h-screen bg-gray-50">
           {/* 상세 헤더 */}
           <div className="p-5 border-b border-gray-200 bg-white">
@@ -158,12 +162,14 @@ export default function TimelineScreen() {
             </div>
           </div>
         </div>
-      </Layout>
+        </Layout>
+      </ProtectedRoute>
     );
   }
 
   return (
-    <Layout>
+    <ProtectedRoute>
+      <Layout>
       <div className="flex flex-col h-screen bg-gray-50">
         {/* 헤더 */}
         <div className="p-5 border-b border-gray-200 text-center bg-white">
@@ -237,6 +243,7 @@ export default function TimelineScreen() {
           </div>
         )}
       </div>
-    </Layout>
+      </Layout>
+    </ProtectedRoute>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../src/components/Layout';
+import ProtectedRoute from '../src/components/ProtectedRoute';
 import { sendChatMessage, summarizeConversation, analyzeEmotion, generateImage } from '../src/services/openai';
 import { saveDiaryEntry } from '../src/services/diary';
 import { ChatMessage } from '../src/types/diary';
@@ -126,8 +127,9 @@ export default function ChatScreen() {
   };
 
   return (
-    <Layout>
-      <div className="flex flex-col h-screen bg-gray-50">
+    <ProtectedRoute>
+      <Layout>
+        <div className="flex flex-col h-screen bg-gray-50">
         {/* 헤더 */}
         <div className="p-5 border-b border-gray-200 text-center bg-white">
           <h2 className="text-xl font-semibold">AI와 대화하기</h2>
@@ -214,7 +216,8 @@ export default function ChatScreen() {
             </button>
           </div>
         </div>
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </ProtectedRoute>
   );
 }

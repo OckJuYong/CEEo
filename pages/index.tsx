@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Layout from '../src/components/Layout';
+import ProtectedRoute from '../src/components/ProtectedRoute';
 
 export default function HomeScreen() {
   return (
-    <Layout>
+    <ProtectedRoute>
+      <Layout>
       <div className="flex-1 px-5 justify-center">
         <div className="flex items-center justify-center mb-5 gap-2">
           <h1 className="text-3xl font-bold text-center">AI 대화 일기</h1>
@@ -39,6 +41,7 @@ export default function HomeScreen() {
           </Link>
         </div>
       </div>
-    </Layout>
+      </Layout>
+    </ProtectedRoute>
   );
 }
