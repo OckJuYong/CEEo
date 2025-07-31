@@ -3,8 +3,8 @@ app: web
 buildpack: nodejs
 build:
   commands:
-    - npm install
-    - npm run build
+    - npm ci
+    - npm run build:web
 run:
   commands:
     - npx serve -s out -p 8080
