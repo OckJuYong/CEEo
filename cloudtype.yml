@@ -1,11 +1,13 @@
 name: ai-diary-pwa
-app: web  
-buildpack: static
+app: web
+buildpack: nodejs
 build:
   commands:
     - npm ci
     - npm run build:web
-    - cp -r out/* ./
+run:
+  commands:
+    - node server.js
 context:
   git:
     url: https://github.com/OckJuYong/CEEo.git
