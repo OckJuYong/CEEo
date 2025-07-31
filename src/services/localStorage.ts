@@ -1,9 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DiaryEntry } from '../types/diary';
 
 const DIARY_ENTRIES_KEY = 'diaryEntries';
 
-// 로컬 스토리지용 일기 저장
+// 웹 로컬 스토리지용 일기 저장
 export const saveDiaryEntryLocal = async (entry: Omit<DiaryEntry, 'id'>): Promise<string> => {
   try {
     console.log('💾 로컬 스토리지에 일기 저장 중...');
@@ -23,8 +22,10 @@ export const saveDiaryEntryLocal = async (entry: Omit<DiaryEntry, 'id'>): Promis
     
     const updatedEntries = [newEntry, ...existingEntries];
     
-    // 로컬 스토리지에 저장
-    await AsyncStorage.setItem(DIARY_ENTRIES_KEY, JSON.stringify(updatedEntries));
+    // 웹 로컬 스토리지에 저장
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(DIARY_ENTRIES_KEY, JSON.stringify(updatedEntries));
+    }
     
     console.log('✅ 로컬 스토리지 저장 완료:', newId);
     return newId;
@@ -34,12 +35,16 @@ export const saveDiaryEntryLocal = async (entry: Omit<DiaryEntry, 'id'>): Promis
   }
 };
 
-// 로컬 스토리지에서 일기 목록 불러오기
+// 웹 로컬 스토리지에서 일기 목록 불러오기
 export const getDiaryEntriesLocal = async (): Promise<DiaryEntry[]> => {
   try {
     console.log('📖 로컬 스토리지에서 일기 불러오기...');
     
-    const entriesJson = await AsyncStorage.getItem(DIARY_ENTRIES_KEY);
+    if (typeof window === 'undefined') {
+      return [];
+    }
+    
+    const entriesJson = localStorage.getItem(DIARY_ENTRIES_KEY);
     
     if (!entriesJson) {
       console.log('📝 저장된 일기가 없습니다.');
@@ -69,7 +74,10 @@ export const deleteDiaryEntryLocal = async (id: string): Promise<void> => {
     const existingEntries = await getDiaryEntriesLocal();
     const updatedEntries = existingEntries.filter(entry => entry.id !== id);
     
-    await AsyncStorage.setItem(DIARY_ENTRIES_KEY, JSON.stringify(updatedEntries));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(DIARY_ENTRIES_KEY, JSON.stringify(updatedEntries));
+    }
+    
     console.log('✅ 일기 삭제 완료:', id);
   } catch (error) {
     console.error('❌ 일기 삭제 실패:', error);
@@ -80,7 +88,9 @@ export const deleteDiaryEntryLocal = async (id: string): Promise<void> => {
 // 모든 일기 삭제 (테스트용)
 export const clearAllDiaryEntriesLocal = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(DIARY_ENTRIES_KEY);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(DIARY_ENTRIES_KEY);
+    }
     console.log('✅ 모든 일기 삭제 완료');
   } catch (error) {
     console.error('❌ 일기 전체 삭제 실패:', error);
