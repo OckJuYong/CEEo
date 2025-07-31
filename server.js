@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 const HOST = '0.0.0.0';
 
 console.log('🚀 Starting AI Diary PWA server...');
