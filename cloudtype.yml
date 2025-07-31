@@ -1,13 +1,11 @@
 name: ai-diary-pwa
-app: web
-buildpack: nodejs
+app: web  
+buildpack: static
 build:
   commands:
     - npm ci
     - npm run build:web
-run:
-  commands:
-    - npx serve -s out -p 8080
+    - cp -r out/* ./
 context:
   git:
     url: https://github.com/OckJuYong/CEEo.git
@@ -31,4 +29,3 @@ context:
     # OpenAI API 키 - CloudType 환경 변수에서 설정
     - key: NEXT_PUBLIC_OPENAI_API_KEY
       value: ${OPENAI_API_KEY}
-port: 8080
